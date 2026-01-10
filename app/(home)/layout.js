@@ -16,7 +16,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={twMerge(inter.className, 'bg-red-50 flex flex-col min-h-screen')}>
+      <body className={twMerge(inter.className, 'bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col min-h-screen')}>
         <DisclaimerModal />
         <UNavbar/>
         <main className="flex-grow">
