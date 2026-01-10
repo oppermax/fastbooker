@@ -1,54 +1,57 @@
 "use client";
 
 import * as React from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import { Button, CardActionArea, CardActions } from '@mui/material';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import Avatar from '@mui/material/Avatar';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 export default function FloorTile({ name, image, id, libraryId}) {
   return (
-    <Card sx={{ 
-      width: 320, 
-      height: '100%',
-      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-      borderRadius: '12px',
-      transition: 'all 0.3s ease',
-      '&:hover': {
-        transform: 'translateY(-4px)',
-        boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
-      }
-    }}>
-      <CardActionArea>
-        <CardMedia
-          component="img"
-          height="160"
-          image={image}
-          alt={`${name} room`}
-          sx={{ objectFit: 'cover' }}
-        />
-        <CardContent sx={{ minHeight: '80px' }}>
-          <Typography gutterBottom variant="h6" component="div" sx={{ fontWeight: 600, lineHeight: 1.3 }}>
-            {name}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-      <CardActions sx={{ padding: '12px 16px' }}>
-        <Button 
-          size="medium" 
-          variant="contained"
-          href={"/library/" + libraryId + "/floor/" + id}
-          sx={{ 
-            textTransform: 'none',
+    <ListItem
+      disablePadding
+      sx={{
+        borderBottom: '1px solid #e5e7eb',
+        '&:last-child': {
+          borderBottom: 'none'
+        }
+      }}
+    >
+      <ListItemButton
+        href={"/library/" + libraryId + "/floor/" + id}
+        sx={{
+          py: 2,
+          px: 3,
+          transition: 'all 0.2s ease',
+          '&:hover': {
+            backgroundColor: '#f3f4f6',
+          }
+        }}
+      >
+        <ListItemAvatar>
+          <Avatar
+            src={image}
+            alt={`${name} room`}
+            sx={{
+              width: 56,
+              height: 56,
+              marginRight: 2
+            }}
+            variant="rounded"
+          />
+        </ListItemAvatar>
+        <ListItemText
+          primary={name}
+          primaryTypographyProps={{
+            fontSize: '1.125rem',
             fontWeight: 600,
-            borderRadius: '8px',
-            paddingX: '20px'
+            color: '#1f2937'
           }}
-        >
-          Select
-        </Button>
-      </CardActions>
-    </Card>
+        />
+        <ChevronRightIcon sx={{ color: '#9ca3af' }} />
+      </ListItemButton>
+    </ListItem>
   );
 }

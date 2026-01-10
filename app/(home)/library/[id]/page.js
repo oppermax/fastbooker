@@ -5,6 +5,7 @@ import FloorTile from '@/components/FloorTile';
 import getFloors from '@/lib/getFloors';
 import Link from 'next/link';
 import ViewAllSeatsButton from './ViewAllSeatsButton';
+import RoomList from './RoomList';
 
 export  default async function Home({params}) {
   const floors = await getFloors(params.id);
@@ -19,18 +20,7 @@ export  default async function Home({params}) {
           <ViewAllSeatsButton libraryId={params.id} />
         </div>
       </div>
-      <div className="flex flex-wrap justify-center gap-6 max-w-7xl mx-auto">
-        {floors.map((floor, i) => (
-          <div key={i}>
-            <FloorTile
-              name={floor.localized_description}
-              image={floor.image}
-              libraryId={params.id}
-              id={floor.resource_type}
-            />
-          </div>
-        ))}
-      </div>
+      <RoomList floors={floors} libraryId={params.id} />
     </main>
   )
 }
