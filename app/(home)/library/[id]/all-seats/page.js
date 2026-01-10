@@ -1,0 +1,83 @@
+"use client";
+
+import { useState, useEffect } from 'react';
+import TextField from '@mui/material/TextField';
+import CircularProgress from '@mui/material/CircularProgress';
+import { formatDate } from '@/lib/utils';
+import DateSelector from '../floor/[floorId]/DateSelector';
+import SeatTile from '../floor/[floorId]/SeatTile';
+import getAllSeats from '@/lib/getAllSeats';
+
+export default function AllSeats({ params }) {
+  const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
+
+  const [seats, setSeats] = useState(null);
+  const [email, setEmail] = useState('');
+  const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    getAllSeats(params.id, selectedDate).then((data) => {
+      setSeats(data);
+      console.log(data);
+    });
+  }, [params.id, selectedDate]);
+
+  const handleDateChange = (date) => {
+    setSeats(null);
+    setSelectedDate(date);
+  };
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearch(event.target.value);
+  };
+
+  return (
+    <div className="mt-3">
+      <center>
+        <div className="mb-4">
+          <h1 className="text-2xl font-bold">All Available Seats</h1>
+          <p className="text-gray-600">Viewing seats across all rooms</p>
+        </div>
+        <div className='flex flex-wrap mt-2'>
+          <div className='flex-1'>
+            <TextField id="outlined-basic" label="ULB Email" variant="outlined" className="m-3" value={email} onChange={handleEmailChange} />
+          </div>
+          <div className='flex-1 mt-2'>
+            <DateSelector onDateChange={handleDateChange} />
+          </div>
+          <div className='flex-1'>
+            <TextField id="outlined-basic" label="Search" variant="outlined" className="m-3" value={search} onChange={handleSearchChange} />
+          </div>
+        </div>
+        {seats ? (
+          seats
+            .filter((seat) => 
+              seat.resource_name.toLowerCase().includes(search.toLowerCase()) || 
+              seat.description.toLowerCase().includes(search.toLowerCase()) ||
+              seat.floor_name.toLowerCase().includes(search.toLowerCase())
+            )
+            .map((seat, i) => (
+              <div key={i}>
+              <SeatTile
+                id={seat.resource_id}
+                name={seat.resource_name}
+                description={`${seat.floor_name} - ${seat.description}`}
+                date={selectedDate}
+                hours={seat.hours}
+                email={email}
+              />
+              </div>
+            )))
+            :
+            <div className='mt-4'>
+              <CircularProgress />
+            </div>
+          }
+      </center>
+    </div>
+  );
+}
