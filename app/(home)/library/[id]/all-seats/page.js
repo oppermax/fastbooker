@@ -2,24 +2,26 @@
 
 import { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
-import getSeats from '@/lib/getSeats';
 import CircularProgress from '@mui/material/CircularProgress';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 import { formatDate } from '@/lib/utils';
-import DateSelector from './DateSelector';
-import SeatTile from './SeatTile';
+import DateSelector from '../floor/[floorId]/DateSelector';
+import SeatTile from '../floor/[floorId]/SeatTile';
+import getAllSeats from '@/lib/getAllSeats';
 
-export default function Floor({ params }) {
+export default function AllSeats({ params }) {
   const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
 
   const [seats, setSeats] = useState(null);
   const [email, setEmail] = useState('');
   const [search, setSearch] = useState('');
+  const [hideNoVacancies, setHideNoVacancies] = useState(false);
 
   useEffect(() => {
-    getSeats(params.id, params.floorId, selectedDate).then((data) => {
-      const allSeats = data.flat(1);
-      setSeats(allSeats);
-      console.log(allSeats);
+    getAllSeats(params.id, selectedDate).then((data) => {
+      setSeats(data);
+      console.log(data);
     });
   }, [params.id, selectedDate]);
 
@@ -36,9 +38,21 @@ export default function Floor({ params }) {
     setSearch(event.target.value);
   };
 
+  const handleHideNoVacanciesChange = (event) => {
+    setHideNoVacancies(event.target.checked);
+  };
+
+  const hasVacancies = (seat) => {
+    return seat.hours && seat.hours.some(hour => hour.places_available > 0);
+  };
+
   return (
     <div className="mt-3">
       <center>
+        <div className="mb-4">
+          <h1 className="text-2xl font-bold">All Available Seats</h1>
+          <p className="text-gray-600">Viewing seats across all rooms</p>
+        </div>
         <div className='flex flex-wrap mt-2'>
           <div className='flex-1'>
             <TextField id="outlined-basic" label="UniPD Email" variant="outlined" className="m-3" value={email} onChange={handleEmailChange} />
@@ -50,15 +64,32 @@ export default function Floor({ params }) {
             <TextField id="outlined-basic" label="Search" variant="outlined" className="m-3" value={search} onChange={handleSearchChange} />
           </div>
         </div>
+        <div className='mb-3'>
+          <FormControlLabel
+            control={
+              <Switch 
+                checked={hideNoVacancies} 
+                onChange={handleHideNoVacanciesChange}
+                color="primary"
+              />
+            }
+            label="Hide seats without vacancies"
+          />
+        </div>
         {seats ? (
           seats
-            .filter((seat) => seat.resource_name.toLowerCase().includes(search.toLowerCase()) || seat.description.toLowerCase().includes(search.toLowerCase()))
+            .filter((seat) => 
+              seat.resource_name.toLowerCase().includes(search.toLowerCase()) || 
+              seat.description.toLowerCase().includes(search.toLowerCase()) ||
+              seat.floor_name.toLowerCase().includes(search.toLowerCase())
+            )
+            .filter((seat) => !hideNoVacancies || hasVacancies(seat))
             .map((seat, i) => (
               <div key={i}>
               <SeatTile
                 id={seat.resource_id}
                 name={seat.resource_name}
-                description={seat.description}
+                description={`${seat.floor_name} - ${seat.description}`}
                 date={selectedDate}
                 hours={seat.hours}
                 email={email}

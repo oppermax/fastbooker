@@ -16,9 +16,9 @@ function EmailInput() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Check if email ends with @ulb
-    if (!email.endsWith('@ulb.be')) {
-        alert('Please enter a valid ULB email address');
+    // Check if email ends with @unipd
+    if (!email.endsWith('@unipd.it')) {
+        alert('Please enter a valid UniPD email address');
     }
     else {
       alert("g");
@@ -28,7 +28,7 @@ function EmailInput() {
   return (
     <form onSubmit={handleSubmit}>
       <TextField
-        label="ULB Email"
+        label="UniPD Email"
         type="email"
         variant="outlined"
         size="small"
