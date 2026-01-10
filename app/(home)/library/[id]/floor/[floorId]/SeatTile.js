@@ -19,6 +19,20 @@ export default function SeatTile({name, description, hours, id, email, date}) {
   const [isError, setIsError] = useState(false);
   const [message, setMessage] = useState('');
 
+  const handleBookSlot = (startTime) => {
+    // Calculate end time (30 minutes after start time)
+    const endTime = new Date(`1970-01-01T${startTime}:00`);
+    endTime.setMinutes(endTime.getMinutes() + 30);
+    const endTimeFormatted = `${endTime.getHours().toString().padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}`;
+    
+    reserve(email, date, startTime, endTimeFormatted, id).then((res) => {
+      console.log(res);
+      setIsError(res[0] === 0);
+      setMessage(res[1]);
+      setHasSubmitted(true);
+    });
+  };
+
   const handleBookAll = () => {
     const slots = findBestBookingPlan(hours);
     slots.forEach((slot, index) => {
@@ -41,7 +55,7 @@ export default function SeatTile({name, description, hours, id, email, date}) {
           {hours.map((hour, i) => (
             hour.places_available > 0 ? (
               <div className='flex flex-wrap m-1' key={i}>
-                <Hour hour={hour}/>
+                <Hour hour={hour} onClick={() => handleBookSlot(hour.hour)}/>
               </div>
             ) : null
           ))}
