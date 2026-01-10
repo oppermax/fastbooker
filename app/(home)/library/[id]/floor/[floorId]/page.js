@@ -41,7 +41,7 @@ export default function Floor({ params }) {
       <center>
         <div className='flex flex-wrap mt-2'>
           <div className='flex-1'>
-            <TextField id="outlined-basic" label="ULB Email" variant="outlined" className="m-3" value={email} onChange={handleEmailChange} />
+            <TextField id="outlined-basic" label="UniPD Email" variant="outlined" className="m-3" value={email} onChange={handleEmailChange} />
           </div>
           <div className='flex-1 mt-2'>
             <DateSelector onDateChange={handleDateChange} />

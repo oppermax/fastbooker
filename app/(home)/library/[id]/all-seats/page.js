@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import CircularProgress from '@mui/material/CircularProgress';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 import { formatDate } from '@/lib/utils';
 import DateSelector from '../floor/[floorId]/DateSelector';
 import SeatTile from '../floor/[floorId]/SeatTile';
@@ -14,6 +16,7 @@ export default function AllSeats({ params }) {
   const [seats, setSeats] = useState(null);
   const [email, setEmail] = useState('');
   const [search, setSearch] = useState('');
+  const [hideNoVacancies, setHideNoVacancies] = useState(false);
 
   useEffect(() => {
     getAllSeats(params.id, selectedDate).then((data) => {
@@ -35,6 +38,14 @@ export default function AllSeats({ params }) {
     setSearch(event.target.value);
   };
 
+  const handleHideNoVacanciesChange = (event) => {
+    setHideNoVacancies(event.target.checked);
+  };
+
+  const hasVacancies = (seat) => {
+    return seat.hours && seat.hours.some(hour => hour.places_available > 0);
+  };
+
   return (
     <div className="mt-3">
       <center>
@@ -44,7 +55,7 @@ export default function AllSeats({ params }) {
         </div>
         <div className='flex flex-wrap mt-2'>
           <div className='flex-1'>
-            <TextField id="outlined-basic" label="ULB Email" variant="outlined" className="m-3" value={email} onChange={handleEmailChange} />
+            <TextField id="outlined-basic" label="UniPD Email" variant="outlined" className="m-3" value={email} onChange={handleEmailChange} />
           </div>
           <div className='flex-1 mt-2'>
             <DateSelector onDateChange={handleDateChange} />
@@ -53,6 +64,18 @@ export default function AllSeats({ params }) {
             <TextField id="outlined-basic" label="Search" variant="outlined" className="m-3" value={search} onChange={handleSearchChange} />
           </div>
         </div>
+        <div className='mb-3'>
+          <FormControlLabel
+            control={
+              <Switch 
+                checked={hideNoVacancies} 
+                onChange={handleHideNoVacanciesChange}
+                color="primary"
+              />
+            }
+            label="Hide seats without vacancies"
+          />
+        </div>
         {seats ? (
           seats
             .filter((seat) => 
@@ -60,6 +83,7 @@ export default function AllSeats({ params }) {
               seat.description.toLowerCase().includes(search.toLowerCase()) ||
               seat.floor_name.toLowerCase().includes(search.toLowerCase())
             )
+            .filter((seat) => !hideNoVacancies || hasVacancies(seat))
             .map((seat, i) => (
               <div key={i}>
               <SeatTile
