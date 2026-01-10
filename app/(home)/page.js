@@ -12,16 +12,14 @@ export default async function Home() {
         </div>
       </div>
       <div className="flex flex-wrap justify-center gap-6 max-w-7xl mx-auto">
-        {libraries.map((floor, i) => (
-          floor.booking_available && (
-            <div key={i}>
-              <LibraryTile
-                name={floor.primary_name}
-                image={floor.poster_image}
-                id={floor.id}
-              />
-            </div>
-          )
+        {libraries.map((library, i) => (
+          <div key={i}>
+            <LibraryTile
+              name={library.primary_name}
+              image={library.poster_image}
+              id={library.id}
+            />
+          </div>
         ))}
       </div>
     </main>
