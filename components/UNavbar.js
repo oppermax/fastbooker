@@ -3,8 +3,9 @@ import { IoIosArrowBack} from 'react-icons/io';
 import { HiOutlineHome } from 'react-icons/hi';
 import React, { useState, useEffect } from 'react';
 import { AppBar, Toolbar, Typography, TextField, Box } from '@mui/material';
-import { Quicksand } from 'next/font/google'
-import { twMerge } from 'tailwind-merge'
+import { Quicksand } from 'next/font/google';
+import { twMerge } from 'tailwind-merge';
+import ShoppingCart from './ShoppingCart';
 
 const font = Quicksand({ subsets: ['latin'], weight: ['400', '600'] })
 
@@ -59,28 +60,31 @@ export default function UNavbar() {
           </div>
         </Box>
 
-        {/* Email input on the right */}
-        <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-          <TextField
-            label="UniPD Email"
-            variant="outlined"
-            size="small"
-            value={email}
-            onChange={handleEmailChange}
-            sx={{
-              backgroundColor: 'white',
-              borderRadius: '8px',
-              minWidth: '250px',
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: 'rgba(255, 255, 255, 0.5)',
-                },
-                '&:hover fieldset': {
-                  borderColor: 'white',
-                },
-              }
-            }}
-          />
+        {/* Email input and Cart on the right */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+            <TextField
+              label="UniPD Email"
+              variant="outlined"
+              size="small"
+              value={email}
+              onChange={handleEmailChange}
+              sx={{
+                backgroundColor: 'white',
+                borderRadius: '8px',
+                minWidth: '250px',
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: 'rgba(255, 255, 255, 0.5)',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: 'white',
+                  },
+                }
+              }}
+            />
+          </Box>
+          <ShoppingCart />
         </Box>
       </Toolbar>
     </AppBar>

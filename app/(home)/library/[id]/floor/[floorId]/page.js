@@ -6,6 +6,7 @@ import getSeats from '@/lib/getSeats';
 import CircularProgress from '@mui/material/CircularProgress';
 import { formatDate } from '@/lib/utils';
 import { searchMultiField } from '@/lib/fuzzySearch';
+import getFloors from '@/lib/getFloors';
 import DateSelector from './DateSelector';
 import SeatTile from './SeatTile';
 import List from '@mui/material/List';
@@ -23,6 +24,29 @@ export default function Floor({ params }) {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('number');
   const [hideNoVacancies, setHideNoVacancies] = useState(false);
+  const [libraryName, setLibraryName] = useState('');
+  const [floorName, setFloorName] = useState('');
+
+  // Load library and floor names from localStorage and cached floor data
+  useEffect(() => {
+    // Get library name from localStorage (stored when user clicked library tile)
+    const storedName = localStorage.getItem(`library_${params.id}_name`);
+    if (storedName) {
+      setLibraryName(storedName);
+    }
+
+    // Get floor name from cached floors data
+    getFloors(params.id).then((floors) => {
+      if (floors.length > 0) {
+        // Find current floor by matching resource_type with floorId
+        const currentFloor = floors.find(f => String(f.resource_type) === String(params.floorId));
+
+        if (currentFloor) {
+          setFloorName(currentFloor.localized_description || 'Room');
+        }
+      }
+    });
+  }, [params.id, params.floorId]);
 
   // Load email from localStorage and listen for changes
   useEffect(() => {
@@ -66,8 +90,16 @@ export default function Floor({ params }) {
     setHideNoVacancies(event.target.checked);
   };
 
+  const handleHideReservedChange = (event) => {
+    setHideReserved(event.target.checked);
+  };
+
   const hasVacancies = (seat) => {
     return seat.hours && seat.hours.some(hour => hour.places_available > 0);
+  };
+
+  const isReserved = (seat) => {
+    return seat.description && seat.description.toLowerCase().includes('riservato');
   };
 
   // Filter and sort seats
@@ -78,7 +110,8 @@ export default function Floor({ params }) {
       .filter((seat) =>
         searchMultiField(seat, ['resource_name', 'description'], search)
       )
-      .filter((seat) => !hideNoVacancies || hasVacancies(seat));
+      .filter((seat) => !hideNoVacancies || hasVacancies(seat))
+      .filter((seat) => !isReserved(seat)); // Permanently exclude reserved seats
 
     if (sortBy === 'capacity') {
       filtered = filtered.sort((a, b) => {
@@ -100,6 +133,16 @@ export default function Floor({ params }) {
   return (
     <div className="py-8 px-4">
       <div className="max-w-7xl mx-auto">
+        {/* Header with Library and Floor Names */}
+        <div className="text-center mb-6">
+          {libraryName && (
+            <h1 className="text-3xl font-bold text-gray-800">{libraryName}</h1>
+          )}
+          {floorName && (
+            <p className="text-xl text-gray-600 mt-1">{floorName}</p>
+          )}
+        </div>
+
         <div className="flex flex-col gap-6 mb-6">
           {/* Date Selector - Full Width */}
           <div className="flex justify-center">
@@ -144,17 +187,7 @@ export default function Floor({ params }) {
             </ToggleButtonGroup>
           </Box>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={hideReserved}
-                  onChange={handleHideReservedChange}
-                  color="primary"
-                />
-              }
-              label="Hide reserved seats"
-            />
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <FormControlLabel
               control={
                 <Switch
