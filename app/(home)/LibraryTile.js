@@ -6,8 +6,17 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea, Chip } from '@mui/material';
+import { useRouter } from 'next/navigation';
 
-export default function LibraryTile({ name, image, id, closed, seatCount, occupancy}) {
+export default function LibraryTile({ name, image, id, closed, occupancy}) {
+  const router = useRouter();
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    // Store library name in localStorage for use in child pages
+    localStorage.setItem(`library_${id}_name`, name);
+    router.push(`/library/${id}`);
+  };
 
   return (
     <Card sx={{ 
@@ -21,7 +30,7 @@ export default function LibraryTile({ name, image, id, closed, seatCount, occupa
         boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
       }
     }}>
-      <CardActionArea href={"/library/" + id}>
+      <CardActionArea onClick={handleClick}>
         <CardMedia
           component="img"
           height="180"
@@ -53,18 +62,6 @@ export default function LibraryTile({ name, image, id, closed, seatCount, occupa
                     occupancy >= 80 ? '#ef4444' : // Red for high occupancy
                     occupancy >= 50 ? '#f59e0b' : // Orange for medium occupancy
                     '#22c55e', // Green for low occupancy
-                  color: 'white',
-                  fontWeight: 600,
-                  fontSize: '0.75rem'
-                }}
-              />
-            )}
-            {seatCount !== undefined && seatCount > 0 && (
-              <Chip
-                label={`${seatCount} ${seatCount === 1 ? 'seat' : 'seats'}`}
-                size="small"
-                sx={{
-                  backgroundColor: '#3b82f6',
                   color: 'white',
                   fontWeight: 600,
                   fontSize: '0.75rem'

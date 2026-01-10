@@ -22,8 +22,16 @@ export default function AllSeats({ params }) {
   const [email, setEmail] = useState('');
   const [search, setSearch] = useState('');
   const [hideNoVacancies, setHideNoVacancies] = useState(false);
-  const [sortBy, setSortBy] = useState('number'); // 'number' or 'capacity'
-  const [hideReserved, setHideReserved] = useState(true); // Default to ON
+  const [sortBy, setSortBy] = useState('number');
+  const [libraryName, setLibraryName] = useState('');
+
+  // Load library name from localStorage (stored when user clicked library tile)
+  useEffect(() => {
+    const storedName = localStorage.getItem(`library_${params.id}_name`);
+    if (storedName) {
+      setLibraryName(storedName);
+    }
+  }, [params.id]);
 
   // Load email from localStorage and listen for changes
   useEffect(() => {
@@ -60,10 +68,6 @@ export default function AllSeats({ params }) {
     setHideNoVacancies(event.target.checked);
   };
 
-  const handleHideReservedChange = (event) => {
-    setHideReserved(event.target.checked);
-  };
-
   const handleSortChange = (event, newSortBy) => {
     if (newSortBy !== null) {
       setSortBy(newSortBy);
@@ -87,17 +91,15 @@ export default function AllSeats({ params }) {
         searchMultiField(seat, ['resource_name', 'description', 'floor_name'], search)
       )
       .filter((seat) => !hideNoVacancies || hasVacancies(seat))
-      .filter((seat) => !hideReserved || !isReserved(seat));
+      .filter((seat) => !isReserved(seat)); // Permanently exclude reserved seats
 
     if (sortBy === 'capacity') {
-      // Sort by number of available slots (descending)
       filtered = filtered.sort((a, b) => {
         const aAvailable = a.hours.filter(h => h.places_available > 0).length;
         const bAvailable = b.hours.filter(h => h.places_available > 0).length;
         return bAvailable - aAvailable;
       });
     } else {
-      // Sort by seat number/name (ascending)
       filtered = filtered.sort((a, b) => {
         return a.resource_name.localeCompare(b.resource_name, undefined, { numeric: true });
       });
@@ -112,8 +114,8 @@ export default function AllSeats({ params }) {
     <div className="py-8 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">All Available Seats</h1>
-          <p className="text-lg text-gray-600">Viewing seats across all rooms</p>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">{libraryName || 'Library'}</h1>
+          <p className="text-lg text-gray-600">All Available Seats</p>
         </div>
 
         <div className="flex flex-col gap-6 mb-6">
@@ -160,17 +162,7 @@ export default function AllSeats({ params }) {
             </ToggleButtonGroup>
           </Box>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={hideReserved}
-                  onChange={handleHideReservedChange}
-                  color="primary"
-                />
-              }
-              label="Hide reserved seats"
-            />
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <FormControlLabel
               control={
                 <Switch

@@ -1,8 +1,6 @@
 import './globals.css'
 import { Quicksand } from 'next/font/google'
-import UNavbar from '@/components/UNavbar'
-import Footer from '@/components/Footer'
-import DisclaimerModal from '@/components/DisclaimerModal'
+import ClientLayout from './ClientLayout'
 import { twMerge } from 'tailwind-merge'
 import { Analytics } from '@vercel/analytics/react';
 
@@ -17,14 +15,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={twMerge(inter.className, 'bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col min-h-screen')}>
-        <DisclaimerModal />
-        <UNavbar/>
-        <main className="flex-grow">
-          {children}
-        </main>
-        <Footer />
+        <ClientLayout>{children}</ClientLayout>
         <Analytics/>
-        </body>
+      </body>
     </html>
   )
 }
+
+
