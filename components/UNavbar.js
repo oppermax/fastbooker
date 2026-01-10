@@ -5,26 +5,37 @@ import React from 'react';
 import { AppBar, Toolbar, Typography } from '@mui/material';
 import { Quicksand } from 'next/font/google'
 import { twMerge } from 'tailwind-merge'
-// next js quicksant font
-const font = Quicksand({ subsets: ['latin'], weight: ['400'] })
+
+const font = Quicksand({ subsets: ['latin'], weight: ['400', '600'] })
 
 export default function UNavbar() {
   return (
-    <AppBar style={{position: 'relative', backgroundColor: '#9b1c1c'}}>
+    <AppBar style={{
+      position: 'relative', 
+      background: 'linear-gradient(135deg, #991b1b 0%, #b91c1c 100%)',
+      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)'
+    }}>
       <Toolbar>
-        <IoIosArrowBack size={30} className='mr-2' onClick={() => window.history.back()}/>
-        <HiOutlineHome size={30} className='mr-2' onClick={() => window.location.href = '/'}/>
+        <IoIosArrowBack 
+          size={28} 
+          className='mr-3 cursor-pointer transition-transform hover:scale-110' 
+          onClick={() => window.history.back()}
+        />
+        <HiOutlineHome 
+          size={28} 
+          className='mr-3 cursor-pointer transition-transform hover:scale-110' 
+          onClick={() => window.location.href = '/'}
+        />
         <div className='mx-4'>
-        <Typography variant="h6">
-          <div className='flex h-full align-middle'>
-          <div className='bg-white text-red-800 px-2 py-1 rounded font-bold mr-2'>
-            UniPD
-          </div>
-          
-          <p className={twMerge(font.className, 'mx-2')}>Fast Booker</p>
-          </div>
+          <Typography variant="h6">
+            <div className='flex items-center'>
+              <div className='bg-white text-red-800 px-3 py-1.5 rounded-lg font-bold mr-3 shadow-md'>
+                UniPD
+              </div>
+              <p className={twMerge(font.className, 'font-semibold text-lg')}>Fast Booker</p>
+            </div>
           </Typography>
-          </div>
+        </div>
       </Toolbar>
     </AppBar>
   );
