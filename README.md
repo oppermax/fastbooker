@@ -1,5 +1,15 @@
 # 🚀 FastBooker - University Library Seat Booking Simplified
 
+## ⚠️ Important Legal Notice
+
+**This is an UNOFFICIAL, independent project not affiliated with Affluences.**
+
+**USE AT YOUR OWN RISK:** This tool may violate Affluences' Terms of Service. Your account could be suspended. This service may stop working at any time. [Read full disclaimer](DISCLAIMER.md)
+
+**Educational Purpose:** This project demonstrates API integration and UX improvements for learning purposes.
+
+---
+
 ## Background
 
 FastBooker is a custom solution designed to enhance the seat booking experience in university libraries. Developed after reverse-engineering the Affluences API, this project aims to address and improve upon the limitations of the existing system.
@@ -34,3 +44,22 @@ npm run dev
 yarn dev
 # or
 pnpm dev
+
+## ⚠️ Legal & Ethical Considerations
+
+### Legal Notice
+This project accesses the Affluences API without official authorization. Please read the [full disclaimer](DISCLAIMER.md) before using.
+
+### Ethical Use
+- Don't abuse the API with excessive requests
+- Respect Affluences' infrastructure and other users
+- Use responsibly and consider supporting the official app
+- This is for personal, educational use only
+
+### Contact
+If you represent Affluences and have concerns, please open an issue. We will respond promptly.
+
+## License
+
+MIT License with disclaimer - see [LICENSE](LICENSE) file for details.
+
