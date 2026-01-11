@@ -4,7 +4,7 @@ import FloorTile from '@/components/FloorTile';
 import List from '@mui/material/List';
 import Paper from '@mui/material/Paper';
 
-export default function RoomList({ floors, libraryId }) {
+export default function RoomList({ floors, libraryId, selectedDate }) {
   return (
     <div className="flex justify-center max-w-3xl mx-auto">
       <Paper
@@ -23,6 +23,7 @@ export default function RoomList({ floors, libraryId }) {
               image={floor.image}
               libraryId={libraryId}
               id={floor.resource_type}
+              selectedDate={selectedDate}
             />
           ))}
         </List>
