@@ -25,6 +25,14 @@ export default function AllSeats({ params }) {
   const [sortBy, setSortBy] = useState('number');
   const [libraryName, setLibraryName] = useState('');
 
+  // Load selected date from localStorage (set by library page)
+  useEffect(() => {
+    const storedDate = localStorage.getItem(`library_${params.id}_selectedDate`);
+    if (storedDate) {
+      setSelectedDate(storedDate);
+    }
+  }, [params.id]);
+
   // Load library name from localStorage (stored when user clicked library tile)
   useEffect(() => {
     const storedName = localStorage.getItem(`library_${params.id}_name`);
@@ -47,6 +55,11 @@ export default function AllSeats({ params }) {
     window.addEventListener('emailChanged', handleEmailChange);
     return () => window.removeEventListener('emailChanged', handleEmailChange);
   }, []);
+
+  // Store selected date in localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem(`library_${params.id}_selectedDate`, selectedDate);
+  }, [selectedDate, params.id]);
 
   useEffect(() => {
     getAllSeats(params.id, selectedDate).then((data) => {
@@ -121,7 +134,7 @@ export default function AllSeats({ params }) {
         <div className="flex flex-col gap-6 mb-6">
           {/* Date Selector - Full Width */}
           <div className="flex justify-center">
-            <DateSelector onDateChange={handleDateChange} />
+            <DateSelector onDateChange={handleDateChange} initialDate={selectedDate} />
           </div>
 
           {/* Search Bar */}

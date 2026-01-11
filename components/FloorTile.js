@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from 'react';
+import { useRouter } from 'next/navigation';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
@@ -8,7 +9,18 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
-export default function FloorTile({ name, image, id, libraryId}) {
+export default function FloorTile({ name, image, id, libraryId, selectedDate}) {
+  const router = useRouter();
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    // Store selected date in localStorage so floor page can use it
+    if (selectedDate) {
+      localStorage.setItem(`library_${libraryId}_selectedDate`, selectedDate);
+    }
+    router.push(`/library/${libraryId}/floor/${id}`);
+  };
+
   return (
     <ListItem
       disablePadding
@@ -20,7 +32,7 @@ export default function FloorTile({ name, image, id, libraryId}) {
       }}
     >
       <ListItemButton
-        href={"/library/" + libraryId + "/floor/" + id}
+        onClick={handleClick}
         sx={{
           py: 2,
           px: 3,

@@ -1,13 +1,20 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { formatDate } from '@/lib/utils';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import ButtonBase from '@mui/material/ButtonBase';
 
-export default function DateSelector({ onDateChange }) {
-  const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
+export default function DateSelector({ onDateChange, initialDate }) {
+  const [selectedDate, setSelectedDate] = useState(initialDate || formatDate(new Date()));
+
+  // Update selected date when initialDate prop changes (e.g., loaded from localStorage)
+  useEffect(() => {
+    if (initialDate && initialDate !== selectedDate) {
+      setSelectedDate(initialDate);
+    }
+  }, [initialDate, selectedDate]);
 
   // Generate next 7 days starting from today
   const getNext7Days = () => {

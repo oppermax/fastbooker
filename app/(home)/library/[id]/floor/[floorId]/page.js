@@ -27,6 +27,14 @@ export default function Floor({ params }) {
   const [libraryName, setLibraryName] = useState('');
   const [floorName, setFloorName] = useState('');
 
+  // Load selected date from localStorage (set by library page)
+  useEffect(() => {
+    const storedDate = localStorage.getItem(`library_${params.id}_selectedDate`);
+    if (storedDate) {
+      setSelectedDate(storedDate);
+    }
+  }, [params.id]);
+
   // Load library and floor names from localStorage and cached floor data
   useEffect(() => {
     // Get library name from localStorage (stored when user clicked library tile)
@@ -62,6 +70,11 @@ export default function Floor({ params }) {
     window.addEventListener('emailChanged', handleEmailChange);
     return () => window.removeEventListener('emailChanged', handleEmailChange);
   }, []);
+
+  // Store selected date in localStorage when it changes, so it persists across room navigation
+  useEffect(() => {
+    localStorage.setItem(`library_${params.id}_selectedDate`, selectedDate);
+  }, [selectedDate, params.id]);
 
   useEffect(() => {
     getSeats(params.id, params.floorId, selectedDate).then((data) => {
@@ -146,7 +159,7 @@ export default function Floor({ params }) {
         <div className="flex flex-col gap-6 mb-6">
           {/* Date Selector - Full Width */}
           <div className="flex justify-center">
-            <DateSelector onDateChange={handleDateChange} />
+            <DateSelector onDateChange={handleDateChange} initialDate={selectedDate} />
           </div>
 
           {/* Search Bar */}
