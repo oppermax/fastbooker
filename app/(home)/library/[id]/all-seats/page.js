@@ -10,7 +10,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { formatDate } from '@/lib/utils';
+import { formatDate, isReserved } from '@/lib/utils';
 import { searchMultiField } from '@/lib/fuzzySearch';
 import DateSelector from '../floor/[floorId]/DateSelector';
 import SeatTile from '../floor/[floorId]/SeatTile';
@@ -90,10 +90,6 @@ export default function AllSeats({ params }) {
 
   const hasVacancies = (seat) => {
     return seat.hours && seat.hours.some(hour => hour.places_available > 0);
-  };
-
-  const isReserved = (seat) => {
-    return seat.description && seat.description.toLowerCase().includes('riservato');
   };
 
   // Filter and sort seats

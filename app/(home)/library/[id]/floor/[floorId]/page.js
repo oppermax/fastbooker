@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import getSeats from '@/lib/getSeats';
 import CircularProgress from '@mui/material/CircularProgress';
-import { formatDate } from '@/lib/utils';
+import { formatDate, isReserved } from '@/lib/utils';
 import { searchMultiField } from '@/lib/fuzzySearch';
 import getFloors from '@/lib/getFloors';
 import DateSelector from './DateSelector';
@@ -110,10 +110,6 @@ export default function Floor({ params }) {
 
   const hasVacancies = (seat) => {
     return seat.hours && seat.hours.some(hour => hour.places_available > 0);
-  };
-
-  const isReserved = (seat) => {
-    return seat.description && seat.description.toLowerCase().includes('riservato');
   };
 
   // Filter and sort seats
