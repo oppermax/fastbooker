@@ -19,8 +19,6 @@ export default async function Home() {
               name={library.primary_name}
               image={library.poster_image}
               id={library.id}
-              closed={library.closed}
-              occupancy={library.current_forecast?.occupancy}
             />
           </div>
         ))}
