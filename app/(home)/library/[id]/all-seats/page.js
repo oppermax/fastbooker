@@ -15,6 +15,7 @@ import { searchMultiField } from '@/lib/fuzzySearch';
 import DateSelector from '../floor/[floorId]/DateSelector';
 import SeatTile from '../floor/[floorId]/SeatTile';
 import getAllSeats from '@/lib/getAllSeats';
+import SmartBookingButton from '@/components/SmartBookingButton';
 
 export default function AllSeats({ params }) {
   const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
@@ -136,6 +137,13 @@ export default function AllSeats({ params }) {
           <div className="flex justify-center">
             <DateSelector onDateChange={handleDateChange} initialDate={selectedDate} />
           </div>
+
+          {/* Smart Booking Button */}
+          {seats && (
+            <div className="flex justify-center">
+              <SmartBookingButton seats={seats} date={selectedDate} email={email} />
+            </div>
+          )}
 
           {/* Search Bar */}
           <div className="flex justify-center">
