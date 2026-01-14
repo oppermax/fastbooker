@@ -162,7 +162,7 @@ export default function Floor({ params }) {
           {/* Smart Booking Button */}
           {seats && (
             <div className="flex justify-center">
-              <SmartBookingButton seats={seats} date={selectedDate} email={email} />
+              <SmartBookingButton seats={seats.filter(seat => !isReserved(seat))} date={selectedDate} email={email} />
             </div>
           )}
 
