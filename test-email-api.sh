@@ -65,11 +65,15 @@ echo "=================================================="
 echo "1. Testing Booking Endpoint (to capture error)"
 echo "=================================================="
 echo "This should fail and show the error message..."
+
+# Use tomorrow's date to ensure it's valid
+TOMORROW=$(date -d '+1 day' '+%Y-%m-%d' 2>/dev/null || date -v+1d '+%Y-%m-%d' 2>/dev/null || echo "2026-01-15")
+
 test_endpoint \
     "Booking with unconfirmed email" \
     "https://reservation.affluences.com/api/reserve/test-resource-id" \
     "POST" \
-    "{\"email\":\"$EMAIL\",\"date\":\"2026-01-15\",\"start_time\":\"09:00\",\"end_time\":\"11:00\",\"person_count\":1}"
+    "{\"email\":\"$EMAIL\",\"date\":\"$TOMORROW\",\"start_time\":\"09:00\",\"end_time\":\"11:00\",\"person_count\":1}"
 
 # Test potential email verification endpoints
 echo ""
@@ -130,7 +134,8 @@ echo "   - lib/emailConfirmation.js (add the endpoint)"
 echo "   - lib/emailConfirmation.js (add error patterns)"
 echo ""
 echo "To test with a specific resource ID:"
+echo "  TOMORROW=\$(date -d '+1 day' '+%Y-%m-%d' 2>/dev/null || date -v+1d '+%Y-%m-%d')"
 echo "  curl -X POST 'https://reservation.affluences.com/api/reserve/YOUR_RESOURCE_ID' \\"
 echo "    -H 'Content-Type: application/json' \\"
-echo "    -d '{\"email\":\"$EMAIL\",\"date\":\"2026-01-15\",\"start_time\":\"09:00\",\"end_time\":\"11:00\",\"person_count\":1}'"
+echo "    -d '{\"email\":\"$EMAIL\",\"date\":\"'\$TOMORROW'\",\"start_time\":\"09:00\",\"end_time\":\"11:00\",\"person_count\":1}'"
 echo ""

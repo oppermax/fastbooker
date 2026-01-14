@@ -21,6 +21,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
 import reserve from '@/lib/reservation';
 import EmailConfirmationDialog from './EmailConfirmationDialog';
+import { EMAIL_CONFIRMATION_REQUIRED } from '@/lib/emailConfirmation';
 
 export default function ShoppingCart() {
   const { cartItems, cartCount, removeFromCart, clearCart, getOptimizedBookings } = useCart();
@@ -82,7 +83,7 @@ export default function ShoppingCart() {
         );
 
         // Check if email confirmation is required
-        if (result[2] === 'EMAIL_CONFIRMATION_REQUIRED') {
+        if (result[2] === EMAIL_CONFIRMATION_REQUIRED) {
           emailConfirmationNeeded = true;
         }
 
@@ -93,7 +94,7 @@ export default function ShoppingCart() {
           endTime: booking.endTime,
           success: result[0] === 1,
           message: result[1],
-          needsEmailConfirmation: result[2] === 'EMAIL_CONFIRMATION_REQUIRED'
+          needsEmailConfirmation: result[2] === EMAIL_CONFIRMATION_REQUIRED
         });
 
         // If email confirmation is needed, stop booking and show dialog
