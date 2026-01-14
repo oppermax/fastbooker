@@ -9,7 +9,7 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
-export default function FloorTile({ name, image, id, libraryId, selectedDate}) {
+export default function FloorTile({ name, description, image, id, libraryId, selectedDate}) {
   const router = useRouter();
 
   const handleClick = (e) => {
@@ -56,10 +56,15 @@ export default function FloorTile({ name, image, id, libraryId, selectedDate}) {
         </ListItemAvatar>
         <ListItemText
           primary={name}
+          secondary={description}
           primaryTypographyProps={{
             fontSize: '1.125rem',
             fontWeight: 600,
             color: '#1f2937'
+          }}
+          secondaryTypographyProps={{
+            fontSize: '0.875rem',
+            color: '#6b7280'
           }}
         />
         <ChevronRightIcon sx={{ color: '#9ca3af' }} />
