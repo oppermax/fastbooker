@@ -20,6 +20,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
 import reserve from '@/lib/reservation';
+import EmailConfirmationDialog from './EmailConfirmationDialog';
 
 export default function ShoppingCart() {
   const { cartItems, cartCount, removeFromCart, clearCart, getOptimizedBookings } = useCart();
@@ -28,6 +29,7 @@ export default function ShoppingCart() {
   const [bookingResults, setBookingResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const [email, setEmail] = useState('');
+  const [showEmailConfirmationDialog, setShowEmailConfirmationDialog] = useState(false);
 
   const optimizedBookings = getOptimizedBookings();
 
@@ -60,6 +62,7 @@ export default function ShoppingCart() {
     setIsBooking(true);
     setShowResults(false);
     const results = [];
+    let emailConfirmationNeeded = false;
 
     for (let i = 0; i < optimizedBookings.length; i++) {
       const booking = optimizedBookings[i];
@@ -78,14 +81,25 @@ export default function ShoppingCart() {
           booking.seatId
         );
 
+        // Check if email confirmation is required
+        if (result[2] === 'EMAIL_CONFIRMATION_REQUIRED') {
+          emailConfirmationNeeded = true;
+        }
+
         results.push({
           seatName: booking.seatName,
           date: booking.date,
           startTime: booking.startTime,
           endTime: booking.endTime,
           success: result[0] === 1,
-          message: result[1]
+          message: result[1],
+          needsEmailConfirmation: result[2] === 'EMAIL_CONFIRMATION_REQUIRED'
         });
+
+        // If email confirmation is needed, stop booking and show dialog
+        if (emailConfirmationNeeded) {
+          break;
+        }
       } catch (error) {
         results.push({
           seatName: booking.seatName,
@@ -100,14 +114,20 @@ export default function ShoppingCart() {
 
     setBookingResults(results);
     setIsBooking(false);
-    setShowResults(true);
-
-    // If all successful, clear cart
-    if (results.every(r => r.success)) {
-      setTimeout(() => {
-        clearCart();
-        setShowResults(false);
-      }, 3000);
+    
+    if (emailConfirmationNeeded) {
+      // Show email confirmation dialog
+      setShowEmailConfirmationDialog(true);
+    } else {
+      setShowResults(true);
+      
+      // If all successful, clear cart
+      if (results.every(r => r.success)) {
+        setTimeout(() => {
+          clearCart();
+          setShowResults(false);
+        }, 3000);
+      }
     }
   };
 
@@ -117,6 +137,12 @@ export default function ShoppingCart() {
     if (hours > 0 && mins > 0) return `${hours}h ${mins}m`;
     if (hours > 0) return `${hours}h`;
     return `${mins}m`;
+  };
+
+  const handleEmailConfirmed = () => {
+    // After email is confirmed, allow user to retry booking
+    setShowEmailConfirmationDialog(false);
+    setShowResults(true);
   };
 
   return (
@@ -129,6 +155,13 @@ export default function ShoppingCart() {
           <ShoppingCartIcon />
         </Badge>
       </IconButton>
+
+      <EmailConfirmationDialog
+        open={showEmailConfirmationDialog}
+        onClose={() => setShowEmailConfirmationDialog(false)}
+        email={email}
+        onConfirmed={handleEmailConfirmed}
+      />
 
       <Drawer
         anchor="right"
