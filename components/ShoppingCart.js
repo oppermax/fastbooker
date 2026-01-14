@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCart } from '@/lib/cartContext';
 import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
@@ -15,6 +15,7 @@ import IconButtonMui from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
 import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
+import TextField from '@mui/material/TextField';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
@@ -26,8 +27,34 @@ export default function ShoppingCart() {
   const [isBooking, setIsBooking] = useState(false);
   const [bookingResults, setBookingResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
+  const [email, setEmail] = useState('');
 
   const optimizedBookings = getOptimizedBookings();
+
+  // Load email from localStorage on mount and listen for changes
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('userEmail');
+    if (savedEmail) {
+      setEmail(savedEmail);
+    }
+
+    const handleEmailChange = (event) => {
+      setEmail(event.detail);
+    };
+
+    window.addEventListener('emailChanged', handleEmailChange);
+    return () => window.removeEventListener('emailChanged', handleEmailChange);
+  }, []);
+
+  // Save email to localStorage and dispatch event whenever it changes
+  const handleEmailChange = (event) => {
+    const newEmail = event.target.value;
+    setEmail(newEmail);
+    localStorage.setItem('userEmail', newEmail);
+
+    // Dispatch custom event so other components can react to email changes
+    window.dispatchEvent(new CustomEvent('emailChanged', { detail: newEmail }));
+  };
 
   const handleBookAll = async () => {
     setIsBooking(true);
@@ -121,6 +148,31 @@ export default function ShoppingCart() {
               <CloseIcon />
             </IconButtonMui>
           </Box>
+
+          {/* Email Input - at the top */}
+          {!showResults && (
+            <Box sx={{ mb: 2 }}>
+              <TextField
+                label="UniPD Email"
+                variant="outlined"
+                size="small"
+                fullWidth
+                value={email}
+                onChange={handleEmailChange}
+                placeholder="your.email@unipd.it"
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '& fieldset': {
+                      borderColor: '#d1d5db',
+                    },
+                    '&:hover fieldset': {
+                      borderColor: '#9ca3af',
+                    },
+                  }
+                }}
+              />
+            </Box>
+          )}
 
           {showResults ? (
             /* Booking Results */
