@@ -20,7 +20,7 @@ export default function RoomList({ floors, libraryId, selectedDate }) {
             <FloorTile
               key={i}
               name={floor.localized_description}
-              description={floor.description}
+              description={floor.localized_subdescription}
               image={floor.image}
               libraryId={libraryId}
               id={floor.resource_type}
