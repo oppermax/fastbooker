@@ -24,6 +24,7 @@ export default function SmartBookingButton({ seats, date, email }) {
   const [open, setOpen] = useState(false);
   const [startTime, setStartTime] = useState('09:00');
   const [endTime, setEndTime] = useState('17:00');
+  const [maxChunkSize, setMaxChunkSize] = useState(4); // Default 4 hours
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -61,8 +62,9 @@ export default function SmartBookingButton({ seats, date, email }) {
     }
 
     try {
-      // Find optimal combinations
-      const results = findOptimalSeatCombinations(seats, startTime, endTime, 5);
+      // Find optimal combinations with configurable max chunk size
+      const maxChunkMinutes = maxChunkSize * 60; // Convert hours to minutes
+      const results = findOptimalSeatCombinations(seats, startTime, endTime, 5, maxChunkMinutes);
 
       if (results.length === 0) {
         setError('No suitable seat combinations found for this time range. Try a shorter duration or different times.');
@@ -138,7 +140,7 @@ export default function SmartBookingButton({ seats, date, email }) {
 
         <DialogContent>
           {/* Time inputs */}
-          <Box sx={{ display: 'flex', gap: 2, mb: 3, mt: 1 }}>
+          <Box sx={{ display: 'flex', gap: 2, mb: 2, mt: 1 }}>
             <TextField
               label="Start Time"
               type="time"
@@ -154,6 +156,20 @@ export default function SmartBookingButton({ seats, date, email }) {
               onChange={(e) => setEndTime(e.target.value)}
               InputLabelProps={{ shrink: true }}
               fullWidth
+            />
+          </Box>
+
+          {/* Max Chunk Size input */}
+          <Box sx={{ mb: 2 }}>
+            <TextField
+              label="Max Booking Duration (hours)"
+              type="number"
+              value={maxChunkSize}
+              onChange={(e) => setMaxChunkSize(Number(e.target.value))}
+              InputLabelProps={{ shrink: true }}
+              inputProps={{ min: 1, max: 12, step: 0.5 }}
+              fullWidth
+              helperText="Maximum duration per booking slot. Note: Different libraries may have different limits (typically 2-4 hours)."
             />
           </Box>
 
