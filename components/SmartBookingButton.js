@@ -165,7 +165,12 @@ export default function SmartBookingButton({ seats, date, email }) {
               label="Max Booking Duration (hours)"
               type="number"
               value={maxChunkSize}
-              onChange={(e) => setMaxChunkSize(Number(e.target.value))}
+              onChange={(e) => {
+                const value = parseFloat(e.target.value);
+                if (!isNaN(value) && value >= 1 && value <= 12) {
+                  setMaxChunkSize(value);
+                }
+              }}
               InputLabelProps={{ shrink: true }}
               inputProps={{ min: 1, max: 12, step: 0.5 }}
               fullWidth
