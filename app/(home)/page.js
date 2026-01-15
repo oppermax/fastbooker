@@ -1,8 +1,23 @@
+"use client";
+
+import { useState, useEffect } from 'react';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
 import getLibraries from '@/lib/getLibraries';
 import LibraryTile from './LibraryTile';
 
-export default async function Home() {
-  const libraries = await getLibraries();
+export default function Home() {
+  const [libraries, setLibraries] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  useEffect(() => {
+    getLibraries().then(setLibraries);
+  }, []);
+
+  // Filter libraries based on search query
+  const filteredLibraries = libraries.filter(library => 
+    library.primary_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <main className="py-8 px-4">
@@ -12,8 +27,21 @@ export default async function Home() {
           <p className="text-lg text-gray-600">Book your seat in one go!</p>
         </div>
       </div>
+      
+      {/* Search bar */}
+      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
+        <TextField
+          label="Search libraries"
+          variant="outlined"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="e.g., Biblioteca"
+          sx={{ width: '100%', maxWidth: 500 }}
+        />
+      </Box>
+
       <div className="flex flex-wrap justify-center gap-6 max-w-7xl mx-auto">
-        {libraries.map((library, i) => (
+        {filteredLibraries.map((library, i) => (
           <div key={i}>
             <LibraryTile
               name={library.primary_name}
