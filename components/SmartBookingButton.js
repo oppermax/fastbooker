@@ -167,8 +167,18 @@ export default function SmartBookingButton({ seats, date, email }) {
               value={maxChunkSize}
               onChange={(e) => {
                 const value = parseFloat(e.target.value);
-                if (!isNaN(value) && value >= 1 && value <= 12) {
-                  setMaxChunkSize(value);
+                // Clamp value to valid range
+                if (!isNaN(value)) {
+                  setMaxChunkSize(Math.max(1, Math.min(12, value)));
+                }
+              }}
+              onBlur={(e) => {
+                // Ensure value is within bounds on blur
+                const value = parseFloat(e.target.value);
+                if (isNaN(value) || value < 1) {
+                  setMaxChunkSize(1);
+                } else if (value > 12) {
+                  setMaxChunkSize(12);
                 }
               }}
               InputLabelProps={{ shrink: true }}

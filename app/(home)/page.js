@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import getLibraries from '@/lib/getLibraries';
@@ -11,12 +11,20 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   
   useEffect(() => {
-    getLibraries().then(setLibraries);
+    getLibraries()
+      .then(setLibraries)
+      .catch(error => {
+        console.error('Failed to load libraries:', error);
+        setLibraries([]);
+      });
   }, []);
 
-  // Filter libraries based on search query
-  const filteredLibraries = libraries.filter(library => 
-    library.primary_name.toLowerCase().includes(searchQuery.toLowerCase())
+  // Filter libraries based on search query - memoized for performance
+  const filteredLibraries = useMemo(() => 
+    libraries.filter(library => 
+      library.primary_name.toLowerCase().includes(searchQuery.toLowerCase())
+    ),
+    [libraries, searchQuery]
   );
 
   return (
