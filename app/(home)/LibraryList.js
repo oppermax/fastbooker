@@ -5,13 +5,13 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import LibraryTile from './LibraryTile';
 
-export default function LibraryList({ libraries }) {
+export default function LibraryList({ libraries = [] }) {
   const [searchQuery, setSearchQuery] = useState('');
 
   // Filter libraries based on search query - memoized for performance
   const filteredLibraries = useMemo(() => 
     libraries.filter(library => 
-      library.primary_name.toLowerCase().includes(searchQuery.toLowerCase())
+      library?.primary_name?.toLowerCase().includes(searchQuery.toLowerCase())
     ),
     [libraries, searchQuery]
   );
