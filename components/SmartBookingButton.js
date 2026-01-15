@@ -20,15 +20,27 @@ import ChairIcon from '@mui/icons-material/Chair';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import { findOptimalSeatCombinations, formatRecommendation } from '@/lib/smartBooking';
 
+// Constants for max chunk size validation
+const MIN_CHUNK_SIZE_HOURS = 1;
+const MAX_CHUNK_SIZE_HOURS = 12;
+const DEFAULT_CHUNK_SIZE_HOURS = 4;
+
 export default function SmartBookingButton({ seats, date, email }) {
   const [open, setOpen] = useState(false);
   const [startTime, setStartTime] = useState('09:00');
   const [endTime, setEndTime] = useState('17:00');
-  const [maxChunkSize, setMaxChunkSize] = useState(4); // Default 4 hours
+  const [maxChunkSize, setMaxChunkSize] = useState(DEFAULT_CHUNK_SIZE_HOURS);
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { addToCart } = useCart();
+
+  // Helper function to validate and clamp chunk size value
+  const validateChunkSize = (value) => {
+    const numValue = parseFloat(value);
+    if (isNaN(numValue)) return DEFAULT_CHUNK_SIZE_HOURS;
+    return Math.max(MIN_CHUNK_SIZE_HOURS, Math.min(MAX_CHUNK_SIZE_HOURS, numValue));
+  };
 
   const handleOpen = () => {
     setOpen(true);
@@ -165,24 +177,10 @@ export default function SmartBookingButton({ seats, date, email }) {
               label="Max Booking Duration (hours)"
               type="number"
               value={maxChunkSize}
-              onChange={(e) => {
-                const value = parseFloat(e.target.value);
-                // Clamp value to valid range
-                if (!isNaN(value)) {
-                  setMaxChunkSize(Math.max(1, Math.min(12, value)));
-                }
-              }}
-              onBlur={(e) => {
-                // Ensure value is within bounds on blur
-                const value = parseFloat(e.target.value);
-                if (isNaN(value) || value < 1) {
-                  setMaxChunkSize(1);
-                } else if (value > 12) {
-                  setMaxChunkSize(12);
-                }
-              }}
+              onChange={(e) => setMaxChunkSize(validateChunkSize(e.target.value))}
+              onBlur={(e) => setMaxChunkSize(validateChunkSize(e.target.value))}
               InputLabelProps={{ shrink: true }}
-              inputProps={{ min: 1, max: 12, step: 0.5 }}
+              inputProps={{ min: MIN_CHUNK_SIZE_HOURS, max: MAX_CHUNK_SIZE_HOURS, step: 0.5 }}
               fullWidth
               helperText="Maximum duration per booking slot. Note: Different libraries may have different limits (typically 2-4 hours)."
             />

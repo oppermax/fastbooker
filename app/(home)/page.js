@@ -49,8 +49,8 @@ export default function Home() {
       </Box>
 
       <div className="flex flex-wrap justify-center gap-6 max-w-7xl mx-auto">
-        {filteredLibraries.map((library, i) => (
-          <div key={i}>
+        {filteredLibraries.map((library) => (
+          <div key={library.id}>
             <LibraryTile
               name={library.primary_name}
               image={library.poster_image}
