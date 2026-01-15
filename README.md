@@ -27,6 +27,7 @@ Leveraging the insights from reverse-engineering the Affluences API, FastBooker 
 - 🔍 **Seat Number Search**: Find and book seats quickly by their numbers.
 - 🕒 **Whole Day Booking**: Conveniently book seats for the entire day, a crucial feature during exam times.
 - 👁️ **View All Seats**: See all available seats across all rooms in a single view, especially useful when libraries are heavily booked.
+- ✉️ **Email Confirmation Support**: Automatic detection and handling of libraries requiring email verification (see [Email Confirmation Guide](EMAIL_CONFIRMATION.md)).
 
 Visit the app here: [FastBooker](https://fastbooker.vercel.app/)
 <img width="1440" alt="Capture d’écran 2023-12-10 à 13 14 12" src="https://github.com/JonathanStefanov/fastbooker/assets/38321403/a5d30338-5a6a-4aa4-8b1f-a8d9964de29c">
@@ -44,6 +45,13 @@ npm run dev
 yarn dev
 # or
 pnpm dev
+```
+
+## 📚 Documentation
+
+- **[Email Confirmation Guide](EMAIL_CONFIRMATION.md)** - How to handle libraries requiring email verification
+- **[Reverse Engineering Guide](REVERSE_ENGINEERING_GUIDE.md)** - Help us discover the email confirmation API endpoints
+- **[Full Disclaimer](DISCLAIMER.md)** - Legal notices and terms of use
 
 ## ⚠️ Legal & Ethical Considerations
 
