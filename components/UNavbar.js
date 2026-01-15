@@ -12,7 +12,9 @@ const font = Quicksand({ subsets: ['latin'], weight: ['400', '600'] })
 export default function UNavbar() {
   return (
     <AppBar style={{
-      position: 'relative', 
+      position: 'sticky',
+      top: 0,
+      zIndex: 1100,
       background: 'linear-gradient(135deg, #991b1b 0%, #b91c1c 100%)',
       boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)'
     }}>
