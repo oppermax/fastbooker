@@ -11,6 +11,7 @@ export default function LibraryList({ libraries = [] }) {
   // Filter libraries based on search query - memoized for performance
   const filteredLibraries = useMemo(() => 
     libraries.filter(library => 
+      library?.id && 
       library?.primary_name?.toLowerCase().includes(searchQuery.toLowerCase())
     ),
     [libraries, searchQuery]
